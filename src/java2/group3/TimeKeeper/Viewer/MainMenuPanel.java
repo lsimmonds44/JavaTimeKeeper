@@ -12,12 +12,12 @@ import java.util.ResourceBundle;
  *
  * @author Skyler Hiscock
  */
-public class MainMenuFrame extends javax.swing.JFrame {
+public class MainMenuPanel extends javax.swing.JPanel {
 
     /**
-     * Creates new form MainMenuFrame
+     * Creates new form MainMenuPanel
      */
-    public MainMenuFrame(Locale locale, String bundleName) {
+    public MainMenuPanel(Locale locale, String bundleName) {
         this.locale = locale;
         this.bundle = ResourceBundle.getBundle(bundleName, locale);
         initComponents();
@@ -33,39 +33,34 @@ public class MainMenuFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         lblUserHeader = new javax.swing.JLabel();
-        lblProjectHeader = new javax.swing.JLabel();
         lblCurrentUser = new javax.swing.JLabel();
         lblCurrentProject = new javax.swing.JLabel();
+        lblProjectHeader = new javax.swing.JLabel();
         btnEnterTimeRecord = new javax.swing.JButton();
         btnExit = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle(this.bundle.getString("gui_mainmenu_title")
-        );
-
         lblUserHeader.setText(this.bundle.getString("gui_mainmenu_lblcurrentuser"));
-
-        lblProjectHeader.setText(this.bundle.getString("gui_mainmenu_lblcurrentproject"));
 
         lblCurrentUser.setText("jLabel1");
 
         lblCurrentProject.setText("jLabel2");
 
+        lblProjectHeader.setText(this.bundle.getString("gui_mainmenu_lblcurrentproject"));
+
         btnEnterTimeRecord.setText(this.bundle.getString("gui_mainmenu_btnentertimerecord"));
 
         btnExit.setText(this.bundle.getString("gui_mainmenu_btnexit"));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnEnterTimeRecord, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(btnEnterTimeRecord, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(140, 140, 140)
+                        .addGap(130, 130, 130)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(lblProjectHeader)
                             .addComponent(lblUserHeader))
@@ -74,9 +69,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
                             .addComponent(lblCurrentUser)
                             .addComponent(lblCurrentProject))
                         .addGap(0, 144, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(btnExit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(btnExit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -96,8 +89,6 @@ public class MainMenuFrame extends javax.swing.JFrame {
                 .addComponent(btnExit)
                 .addContainerGap())
         );
-
-        pack();
     }// </editor-fold>//GEN-END:initComponents
 
 
@@ -109,11 +100,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
     private javax.swing.JLabel lblProjectHeader;
     private javax.swing.JLabel lblUserHeader;
     // End of variables declaration//GEN-END:variables
-   
-    
     private final ResourceBundle bundle;
     private final Locale locale;
-
-
 
 }

@@ -13,12 +13,12 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Skyler Hiscock
  */
-public class TimeEntryFrame extends javax.swing.JFrame {
+public class TimeEntryPanel extends javax.swing.JPanel {
 
     /**
-     * Creates new form TimeEntryFrame
+     * Creates new form TimeEntryPanel
      */
-    public TimeEntryFrame(Locale locale, String bundleName) {
+    public TimeEntryPanel(Locale locale, String bundleName) {
         this.locale = locale;
         this.bundle = ResourceBundle.getBundle(bundleName, locale);
         initComponents();
@@ -34,19 +34,17 @@ public class TimeEntryFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         buttonGroup = new javax.swing.ButtonGroup();
+        lblselectproject = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         rdoStarting = new javax.swing.JRadioButton();
         rdoEnding = new javax.swing.JRadioButton();
         btnStoreRecord = new javax.swing.JButton();
-        lblselectproject = new javax.swing.JLabel();
 
         buttonGroup.add(rdoStarting);
         buttonGroup.add(rdoEnding);
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle(this.bundle.getString("gui_timeentry_title")
-        );
+        lblselectproject.setText(this.bundle.getString("gui_timeentry_lblselectproject"));
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -71,32 +69,28 @@ public class TimeEntryFrame extends javax.swing.JFrame {
 
         btnStoreRecord.setText(this.bundle.getString("gui_timeentry_btnsaverecord"));
 
-        lblselectproject.setText(this.bundle.getString("gui_timeentry_lblselectproject"));
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(27, 27, 27)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 457, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(rdoEnding)
                             .addComponent(rdoStarting))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnStoreRecord))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(47, 47, 47)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblselectproject)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 653, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(47, Short.MAX_VALUE))
+                    .addComponent(lblselectproject)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 653, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(10, 10, 10)
+                .addContainerGap()
                 .addComponent(lblselectproject)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -109,20 +103,16 @@ public class TimeEntryFrame extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(27, 27, 27)
                         .addComponent(btnStoreRecord)))
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
-        pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    public void addRowToTable(String projectName, String projectDesc){
+    public void addRowToTable(String projectName, String projectDesc) {
         model.addRow(new Object[]{projectName, projectDesc});
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnStoreRecord;
     private javax.swing.ButtonGroup buttonGroup;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
     private javax.swing.JLabel lblselectproject;
