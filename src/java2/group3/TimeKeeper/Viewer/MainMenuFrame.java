@@ -7,6 +7,7 @@ package java2.group3.TimeKeeper.Viewer;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java2.group3.TimeKeeper.DataObjects.Employee;
 
 /**
  *
@@ -16,10 +17,14 @@ public class MainMenuFrame extends javax.swing.JFrame {
 
     /**
      * Creates new form MainMenuFrame
+     * @param locale
+     * @param bundleName
+     * @param currentEmployee
      */
-    public MainMenuFrame(Locale locale, String bundleName) {
+    public MainMenuFrame(Locale locale, String bundleName, Employee currentEmployee) {
         this.locale = locale;
         this.bundle = ResourceBundle.getBundle(bundleName, locale);
+        this.currentEmployee = currentEmployee;
         initComponents();
     }
 
@@ -47,7 +52,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
 
         lblProjectHeader.setText(this.bundle.getString("gui_mainmenu_lblcurrentproject"));
 
-        lblCurrentUser.setText("jLabel1");
+        lblCurrentUser.setText(currentEmployee.getFirstName() + " " + currentEmployee.getLastName());
 
         lblCurrentProject.setText("jLabel2");
 
@@ -73,7 +78,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblCurrentUser)
                             .addComponent(lblCurrentProject))
-                        .addGap(0, 144, Short.MAX_VALUE))
+                        .addGap(0, 112, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(btnExit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
@@ -113,6 +118,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
     
     private final ResourceBundle bundle;
     private final Locale locale;
+    private final Employee currentEmployee;
 
 
 

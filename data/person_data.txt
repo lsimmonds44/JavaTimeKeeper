@@ -4,3 +4,4 @@
 1100052|Sara|Apricot|IDontRemember|MANAGER
 1100078|Noah|Guava|ILikePonies|EMPLOYEE
 1100120|Ava|Papaya|YourPassword|EMPLOYEE
+111|Test|User|test|EMPLOYEE

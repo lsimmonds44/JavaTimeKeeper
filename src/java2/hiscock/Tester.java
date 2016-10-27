@@ -20,7 +20,7 @@ public class Tester {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         String bundleName = "java2.group3.TimeKeeper.Resources.TimeKeeper";
         Locale currentLocale = Locale.ENGLISH;
         
@@ -33,6 +33,6 @@ public class Tester {
         
         TimeEntryFrame timeEntryFrame = new TimeEntryFrame(currentLocale, bundleName);
         timeEntryFrame.setVisible(true);
-    }
+    }*/
     
 }

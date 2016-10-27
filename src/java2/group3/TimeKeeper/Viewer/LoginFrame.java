@@ -7,8 +7,10 @@ package java2.group3.TimeKeeper.Viewer;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java2.group3.TimeKeeper.DataObjects.Employee;
 import javax.swing.JOptionPane;
 import java2.group3.TimeKeeper.Logic.AccountVerification;
+import java2.group3.TimeKeeper.Logic.LoginLogic;
 
 /**
  *
@@ -16,7 +18,7 @@ import java2.group3.TimeKeeper.Logic.AccountVerification;
  */
 public class LoginFrame extends javax.swing.JFrame {
 
-    AccountVerification accountVerify = new AccountVerification();
+    private LoginLogic loginLogic = new LoginLogic();
 
     /**
      * Creates new form LoginFrame
@@ -127,10 +129,12 @@ public class LoginFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_LoginButtonMouseClicked
 
     private void attemptLogin() {
-        if (accountVerify.verifyAccount(IDField.getText(), passwordField.getText()) == false) {
+        Employee currentEmployee = loginLogic.verifyAccount(IDField.getText(), passwordField.getText());
+        if (currentEmployee == null) {
             JOptionPane.showMessageDialog(null, bundle.getString("gui_login_invalidlogin"), bundle.getString("error"), JOptionPane.ERROR_MESSAGE);
         } else {
-            JOptionPane.showMessageDialog(null, "You are logged in!", "Success:", JOptionPane.INFORMATION_MESSAGE);
+            loginLogic.launchMainMenu(locale, bundle.getBaseBundleName(), currentEmployee);
+            this.dispose();
         }
     }
 
