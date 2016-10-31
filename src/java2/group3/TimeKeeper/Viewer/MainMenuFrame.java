@@ -5,26 +5,39 @@
  */
 package java2.group3.TimeKeeper.Viewer;
 
-import java.util.Locale;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 import java2.group3.TimeKeeper.DataObjects.Employee;
+import java2.group3.TimeKeeper.DataObjects.TimeRecord;
+import java2.group3.TimeKeeper.Logic.MainMenuLogic;
 
 /**
  *
  * @author Skyler Hiscock
  */
 public class MainMenuFrame extends javax.swing.JFrame {
+    private MainMenuLogic menuLogic = new MainMenuLogic();
+    
 
     /**
      * Creates new form MainMenuFrame
-     * @param locale
-     * @param bundleName
+     * @param bundle
      * @param currentEmployee
      */
-    public MainMenuFrame(Locale locale, String bundleName, Employee currentEmployee) {
-        this.locale = locale;
-        this.bundle = ResourceBundle.getBundle(bundleName, locale);
+    public MainMenuFrame(ResourceBundle bundle, Employee currentEmployee) {
+        this(bundle, currentEmployee, null);
+    }
+    
+    /**
+     *
+     * @param bundle
+     * @param currentEmployee
+     * @param timeRecord
+     */
+    public MainMenuFrame(ResourceBundle bundle, Employee currentEmployee, TimeRecord timeRecord) {
+        this.bundle = bundle;
         this.currentEmployee = currentEmployee;
+        this.timeRecord = timeRecord;
         initComponents();
     }
 
@@ -43,6 +56,8 @@ public class MainMenuFrame extends javax.swing.JFrame {
         lblCurrentProject = new javax.swing.JLabel();
         btnEnterTimeRecord = new javax.swing.JButton();
         btnExit = new javax.swing.JButton();
+        lblStartOrEndHeader = new javax.swing.JLabel();
+        lblStartOrEnd = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(this.bundle.getString("gui_mainmenu_title")
@@ -54,11 +69,40 @@ public class MainMenuFrame extends javax.swing.JFrame {
 
         lblCurrentUser.setText(currentEmployee.getFirstName() + " " + currentEmployee.getLastName());
 
-        lblCurrentProject.setText("jLabel2");
+        if(timeRecord != null){
+            String projectName = menuLogic.getProjectName(timeRecord);
+            if(projectName != null){
+                lblCurrentProject.setText(projectName);
+            }
+        }else{
+            lblCurrentProject.setText(bundle.getString("gui_mainmenu_lblnocurrentproject"));
+        }
 
         btnEnterTimeRecord.setText(this.bundle.getString("gui_mainmenu_btnentertimerecord"));
+        btnEnterTimeRecord.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnEnterTimeRecordMouseClicked(evt);
+            }
+        });
 
         btnExit.setText(this.bundle.getString("gui_mainmenu_btnexit"));
+        btnExit.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnExitMouseClicked(evt);
+            }
+        });
+
+        if(timeRecord == null || timeRecord.getStartOrStop() == 'S'){
+            lblStartOrEndHeader.setText(this.bundle.getString("gui_mainmenu_starttime"));
+        } else {
+            lblStartOrEndHeader.setText(this.bundle.getString("gui_mainmenu_endtime"));
+        }
+
+        if(timeRecord != null){
+            lblStartOrEnd.setText(timeRecord.getDateTime().format(formatter).toString());
+        }else{
+            lblStartOrEnd.setText(this.bundle.getString("gui_mainmenu_lblnocurrentproject"));
+        }
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -67,21 +111,23 @@ public class MainMenuFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(btnEnterTimeRecord, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(140, 140, 140)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(lblProjectHeader)
-                            .addComponent(lblUserHeader))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(lblProjectHeader)
+                                .addComponent(lblUserHeader))
+                            .addComponent(lblStartOrEndHeader))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblStartOrEnd)
                             .addComponent(lblCurrentUser)
                             .addComponent(lblCurrentProject))
                         .addGap(0, 112, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(btnExit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnEnterTimeRecord, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnExit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -95,15 +141,33 @@ public class MainMenuFrame extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblProjectHeader)
                     .addComponent(lblCurrentProject))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblStartOrEndHeader)
+                    .addComponent(lblStartOrEnd))
                 .addGap(18, 18, 18)
                 .addComponent(btnEnterTimeRecord)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 175, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 150, Short.MAX_VALUE)
                 .addComponent(btnExit)
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnEnterTimeRecordMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEnterTimeRecordMouseClicked
+        TimeEntryFrame timeEntry = new TimeEntryFrame(bundle, currentEmployee);
+        timeEntry.setLocationRelativeTo(this);
+        timeEntry.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnEnterTimeRecordMouseClicked
+
+    private void btnExitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExitMouseClicked
+        LoginFrame loginFrame = new LoginFrame(bundle);
+        loginFrame.setLocationRelativeTo(this);
+        loginFrame.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnExitMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -112,13 +176,16 @@ public class MainMenuFrame extends javax.swing.JFrame {
     private javax.swing.JLabel lblCurrentProject;
     private javax.swing.JLabel lblCurrentUser;
     private javax.swing.JLabel lblProjectHeader;
+    private javax.swing.JLabel lblStartOrEnd;
+    private javax.swing.JLabel lblStartOrEndHeader;
     private javax.swing.JLabel lblUserHeader;
     // End of variables declaration//GEN-END:variables
    
     
     private final ResourceBundle bundle;
-    private final Locale locale;
     private final Employee currentEmployee;
+    private final TimeRecord timeRecord;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
 
 

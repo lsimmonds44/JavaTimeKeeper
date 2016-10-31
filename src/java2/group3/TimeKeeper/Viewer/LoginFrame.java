@@ -5,11 +5,10 @@
  */
 package java2.group3.TimeKeeper.Viewer;
 
-import java.util.Locale;
+import java.awt.event.KeyEvent;
 import java.util.ResourceBundle;
 import java2.group3.TimeKeeper.DataObjects.Employee;
 import javax.swing.JOptionPane;
-import java2.group3.TimeKeeper.Logic.AccountVerification;
 import java2.group3.TimeKeeper.Logic.LoginLogic;
 
 /**
@@ -18,16 +17,15 @@ import java2.group3.TimeKeeper.Logic.LoginLogic;
  */
 public class LoginFrame extends javax.swing.JFrame {
 
-    private LoginLogic loginLogic = new LoginLogic();
+    private final LoginLogic loginLogic = new LoginLogic();
 
     /**
      * Creates new form LoginFrame
-     * @param locale
-     * @param bundleName
+     *
+     * @param bundle
      */
-    public LoginFrame(Locale locale, String bundleName) {
-        this.locale = locale;
-        this.bundle = ResourceBundle.getBundle(bundleName, locale);
+    public LoginFrame(ResourceBundle bundle) {
+        this.bundle = bundle;
         initComponents();
     }
 
@@ -56,6 +54,9 @@ public class LoginFrame extends javax.swing.JFrame {
         lblPassword.setText(this.bundle.getString("gui_login_password"));
 
         LoginButton.setText(bundle.getString("gui_login_loginbtnlabel"));
+        LoginButton.setFocusable(false);
+        this.getRootPane().setDefaultButton(this.LoginButton);
+        this.LoginButton.requestFocus();
         LoginButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 LoginButtonMouseClicked(evt);
@@ -119,22 +120,24 @@ public class LoginFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void LoginButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_LoginButtonMouseClicked
-        if (IDField.getText().equals("")) {
-            JOptionPane.showMessageDialog(null, bundle.getString("gui_login_noid"), bundle.getString("error"), JOptionPane.ERROR_MESSAGE);
-        } else if (passwordField.getText().equals("")) {
-            JOptionPane.showMessageDialog(null, bundle.getString("gui_login_nopassword"), bundle.getString("error"), JOptionPane.ERROR_MESSAGE);
-        } else {
-            attemptLogin();
-        }
+        attemptLogin();
     }//GEN-LAST:event_LoginButtonMouseClicked
 
     private void attemptLogin() {
-        Employee currentEmployee = loginLogic.verifyAccount(IDField.getText(), passwordField.getText());
-        if (currentEmployee == null) {
-            JOptionPane.showMessageDialog(null, bundle.getString("gui_login_invalidlogin"), bundle.getString("error"), JOptionPane.ERROR_MESSAGE);
+        if (IDField.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, bundle.getString("gui_login_noid"), bundle.getString("error"), JOptionPane.ERROR_MESSAGE);
+        } else if (passwordField.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, bundle.getString("gui_login_nopassword"), bundle.getString("error"), JOptionPane.ERROR_MESSAGE);
         } else {
-            loginLogic.launchMainMenu(locale, bundle.getBaseBundleName(), currentEmployee);
-            this.dispose();
+            Employee currentEmployee = loginLogic.verifyAccount(IDField.getText(), passwordField.getText());
+            if (currentEmployee == null) {
+                JOptionPane.showMessageDialog(this, bundle.getString("gui_login_invalidlogin"), bundle.getString("error"), JOptionPane.ERROR_MESSAGE);
+            } else {
+                MainMenuFrame mainMenu = new MainMenuFrame(bundle, currentEmployee);
+                mainMenu.setLocationRelativeTo(this);
+                mainMenu.setVisible(true);
+                this.dispose();
+            }
         }
     }
 
@@ -148,6 +151,5 @@ public class LoginFrame extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private final ResourceBundle bundle;
-    private final Locale locale;
 
 }

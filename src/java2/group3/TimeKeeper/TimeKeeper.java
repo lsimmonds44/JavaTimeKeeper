@@ -6,6 +6,7 @@
 package java2.group3.TimeKeeper;
 
 import java.util.Locale;
+import java.util.ResourceBundle;
 import java2.group3.TimeKeeper.Viewer.LoginFrame;
 
 /**
@@ -20,8 +21,9 @@ public class TimeKeeper {
     public static void main(String[] args) {
         String bundleName = "java2.group3.TimeKeeper.Resources.TimeKeeper";
         Locale currentLocale = Locale.ENGLISH;
+        ResourceBundle bundle = ResourceBundle.getBundle(bundleName, currentLocale);
         
-        LoginFrame loginFrame = new LoginFrame(currentLocale, bundleName);
+        LoginFrame loginFrame = new LoginFrame(bundle);
         loginFrame.setVisible(true);
     }
 

@@ -5,7 +5,7 @@
  */
 package java2.group3.TimeKeeper.Logic;
 
-import java.util.Locale;
+import java.util.ResourceBundle;
 import java2.group3.TimeKeeper.DataAccess.EmployeeDAO;
 import java2.group3.TimeKeeper.DataObjects.Employee;
 import java2.group3.TimeKeeper.Viewer.MainMenuFrame;
@@ -21,7 +21,9 @@ public class LoginLogic {
     public Employee verifyAccount(String employeeId, String password) {
         Employee verifiedEmployee = null;
         try {
-            if (employeeAccess.getEmployee(employeeId).getPassword().equals(password)) {
+            Employee employee = employeeAccess.getEmployee(employeeId);
+            if (employee != null)
+                if(employee.getPassword().equals(password)) {
                 verifiedEmployee = employeeAccess.getEmployee(employeeId);
             }
         } catch (Exception e) {
@@ -29,10 +31,5 @@ public class LoginLogic {
         }
 
         return verifiedEmployee;
-    }
-    
-    public void launchMainMenu(Locale locale, String bundleName, Employee employee){
-        MainMenuFrame mainMenu = new MainMenuFrame(locale, bundleName, employee);
-        mainMenu.setVisible(true);
     }
 }

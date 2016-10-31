@@ -116,10 +116,14 @@
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="bundle.getString(&quot;gui_login_loginbtnlabel&quot;)" type="code"/>
             </Property>
+            <Property name="focusable" type="boolean" value="false"/>
           </Properties>
           <Events>
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="LoginButtonMouseClicked"/>
           </Events>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="this.getRootPane().setDefaultButton(this.LoginButton);&#xd;&#xa;this.LoginButton.requestFocus();"/>
+          </AuxValues>
         </Component>
       </SubComponents>
     </Container>

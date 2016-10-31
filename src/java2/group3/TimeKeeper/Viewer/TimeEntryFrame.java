@@ -5,8 +5,16 @@
  */
 package java2.group3.TimeKeeper.Viewer;
 
-import java.util.Locale;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java2.group3.TimeKeeper.DataObjects.Employee;
+import java2.group3.TimeKeeper.DataObjects.TimeRecord;
+import java2.group3.TimeKeeper.Logic.TimeEntryLogic;
+import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -18,11 +26,13 @@ public class TimeEntryFrame extends javax.swing.JFrame {
     /**
      * Creates new form TimeEntryFrame
      */
-    public TimeEntryFrame(Locale locale, String bundleName) {
-        this.locale = locale;
-        this.bundle = ResourceBundle.getBundle(bundleName, locale);
+    public TimeEntryFrame(ResourceBundle bundle, Employee currentUser) {
+        this.bundle = bundle;
+        this.currentEmployee = currentUser;
         initComponents();
     }
+
+    TimeEntryLogic timeLogic = new TimeEntryLogic();
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -35,11 +45,13 @@ public class TimeEntryFrame extends javax.swing.JFrame {
 
         buttonGroup = new javax.swing.ButtonGroup();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        projectTable = new javax.swing.JTable();
         rdoStarting = new javax.swing.JRadioButton();
         rdoEnding = new javax.swing.JRadioButton();
         btnStoreRecord = new javax.swing.JButton();
         lblselectproject = new javax.swing.JLabel();
+        lblUserHeader = new javax.swing.JLabel();
+        lblCurrentUser = new javax.swing.JLabel();
 
         buttonGroup.add(rdoStarting);
         buttonGroup.add(rdoEnding);
@@ -48,49 +60,62 @@ public class TimeEntryFrame extends javax.swing.JFrame {
         setTitle(this.bundle.getString("gui_timeentry_title")
         );
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        projectTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
             },
             new String [] {
-                this.bundle.getString("gui_timeentry_tbltitleprojectname"), this.bundle.getString("gui_timeentry_tbltitleprojectdesc")
+                this.bundle.getString("gui_timeentry_tbltitleprojectid"),this.bundle.getString("gui_timeentry_tbltitleprojectname"), this.bundle.getString("gui_timeentry_tbltitleprojectdesc")
             }
         ){
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return false;
             }
         });
-        jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
-        jTable1.getColumnModel().getColumn(0).setPreferredWidth(125);
-        jTable1.getColumnModel().getColumn(1).setPreferredWidth(525);
-        model = (DefaultTableModel) jTable1.getModel();
-        jScrollPane2.setViewportView(jTable1);
+        projectTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        projectTable.getColumnModel().getColumn(0).setPreferredWidth(25);
+        projectTable.getColumnModel().getColumn(1).setPreferredWidth(125);
+        projectTable.getColumnModel().getColumn(2).setPreferredWidth(525);
+        tableModel = (DefaultTableModel) projectTable.getModel();
+        projectTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        addProjectsToTable();
+        jScrollPane2.setViewportView(projectTable);
 
         rdoStarting.setText(this.bundle.getString("gui_timeentry_rdostarting"));
 
         rdoEnding.setText(this.bundle.getString("gui_timeentry_rdoending"));
 
         btnStoreRecord.setText(this.bundle.getString("gui_timeentry_btnsaverecord"));
+        btnStoreRecord.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnStoreRecordMouseClicked(evt);
+            }
+        });
 
         lblselectproject.setText(this.bundle.getString("gui_timeentry_lblselectproject"));
+
+        lblUserHeader.setText(this.bundle.getString("gui_mainmenu_lblcurrentuser"));
+
+        lblCurrentUser.setText(currentEmployee.getFirstName() + " " + currentEmployee.getLastName());
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(47, 47, 47)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblUserHeader)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lblCurrentUser)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(rdoEnding)
                             .addComponent(rdoStarting))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnStoreRecord))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(47, 47, 47)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblselectproject)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 653, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(lblselectproject)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 653, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(47, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -105,7 +130,10 @@ public class TimeEntryFrame extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(rdoStarting)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(rdoEnding))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(rdoEnding)
+                            .addComponent(lblUserHeader)
+                            .addComponent(lblCurrentUser)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(27, 27, 27)
                         .addComponent(btnStoreRecord)))
@@ -115,23 +143,87 @@ public class TimeEntryFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    public void addRowToTable(String projectName, String projectDesc){
-        model.addRow(new Object[]{projectName, projectDesc});
+    private void btnStoreRecordMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnStoreRecordMouseClicked
+        if (projectTable.getSelectedRow() == -1) {
+            JOptionPane.showMessageDialog(this, bundle.getString("gui_timeentry_noselectedrow"), bundle.getString("error"), JOptionPane.ERROR_MESSAGE);
+        } else if (buttonGroup.getSelection() == null) {
+            JOptionPane.showMessageDialog(this, bundle.getString("gui_timeentry_noselectedradio"), bundle.getString("error"), JOptionPane.ERROR_MESSAGE);
+        } else {
+            saveTimeRecord();
+        }
+    }//GEN-LAST:event_btnStoreRecordMouseClicked
+
+    /**
+     * Adds new row to table with project name and project description
+     *
+     * @param projectName
+     * @param projectDesc
+     */
+    private void addProjectsToTable() {
+        ArrayList<Object[]> activeProjects = null;
+        try {
+            activeProjects = timeLogic.getActiveProjects();
+            if (activeProjects != null) {
+                for (Object[] o : activeProjects) {
+                    tableModel.addRow(o);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "No projects found.", bundle.getString("error"), JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (IOException ioe) {
+            JOptionPane.showMessageDialog(this, ioe.getMessage(), bundle.getString("error"), JOptionPane.ERROR_MESSAGE);
+        }
+
+    }
+
+    private void saveTimeRecord() {
+        // getting TimeRecord information
+        int selectedRowIndex = projectTable.getSelectedRow();
+        int projectId = (int) projectTable.getModel().getValueAt(selectedRowIndex, PROJECTIDTABLEINDEX);
+        int employeeId = currentEmployee.getId();
+        char startOrEnd = 'z';
+        if (this.rdoStarting.isSelected()) {
+            startOrEnd = 'S';
+        } else if (this.rdoEnding.isSelected()) {
+            startOrEnd = 'E';
+        }
+        // Create the TimeRecord
+        TimeRecord timeRecord = new TimeRecord(projectId, employeeId, startOrEnd, LocalDateTime.now());
+
+        // Save the Time Record
+        try {
+            if (timeLogic.saveTimeRecord(timeRecord)) {
+                // If the TimeRecord save was successful, notify the user in an OptionPane and return to MainMenu
+                Object[] options = {"OK"};
+                int ok = JOptionPane.showOptionDialog(this, this.bundle.getString("gui_timeentry_entrysuccess"), this.bundle.getString("success"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+                if (ok == JOptionPane.OK_OPTION) {
+                    MainMenuFrame mainMenu = new MainMenuFrame(bundle, currentEmployee, timeRecord);
+                    mainMenu.setLocationRelativeTo(this);
+                    mainMenu.setVisible(true);
+                    this.dispose();
+                }
+            }
+
+        } catch (IOException ioe) {
+            JOptionPane.showMessageDialog(this, ioe.getMessage(), bundle.getString("error"), JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnStoreRecord;
     private javax.swing.ButtonGroup buttonGroup;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JLabel lblCurrentUser;
+    private javax.swing.JLabel lblUserHeader;
     private javax.swing.JLabel lblselectproject;
+    private javax.swing.JTable projectTable;
     private javax.swing.JRadioButton rdoEnding;
     private javax.swing.JRadioButton rdoStarting;
     // End of variables declaration//GEN-END:variables
 
     private final ResourceBundle bundle;
-    private final Locale locale;
-    private DefaultTableModel model;
+    private DefaultTableModel tableModel;
+    private Employee currentEmployee;
+    private final int PROJECTIDTABLEINDEX = 0;
 
 }

@@ -5,7 +5,7 @@
  */
 package java2.group3.TimeKeeper.DataObjects;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  *
@@ -13,20 +13,48 @@ import java.util.Date;
  */
 public class TimeRecord {
     private int projectId;
-    private int personId;
+    private int employeeId;
     private char startOrStop;
-    private Date dateTime;
+    private LocalDateTime dateTime;
     
-    public TimeRecord(int projectId, int personId, char startOrStop, Date dateTime){
+    public TimeRecord(int projectId, int personId, char startOrStop, LocalDateTime dateTime){
         this.projectId = projectId;
-        this.personId = personId;
+        this.employeeId = personId;
         this.startOrStop = startOrStop;
         this.dateTime = dateTime;
     }
     
     @Override
     public String toString(){
-        return this.projectId + "|" + this.personId + "|" + this.startOrStop + "|" + this.dateTime;
+        return this.getProjectId() + "|" + this.getEmployeeId() + "|" + this.getStartOrStop() + "|" + this.getDateTime();
+    }
+
+    /**
+     * @return the projectId
+     */
+    public int getProjectId() {
+        return projectId;
+    }
+
+    /**
+     * @return the employeeId
+     */
+    public int getEmployeeId() {
+        return employeeId;
+    }
+
+    /**
+     * @return the startOrStop
+     */
+    public char getStartOrStop() {
+        return startOrStop;
+    }
+
+    /**
+     * @return the dateTime
+     */
+    public LocalDateTime getDateTime() {
+        return dateTime;
     }
     
 }
