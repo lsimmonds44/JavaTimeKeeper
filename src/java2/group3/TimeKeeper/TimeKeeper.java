@@ -20,7 +20,7 @@ public class TimeKeeper {
      */
     public static void main(String[] args) {
         String bundleName = "java2.group3.TimeKeeper.Resources.TimeKeeper";
-        Locale currentLocale = Locale.ENGLISH;
+        Locale currentLocale = Locale.FRANCE;
         ResourceBundle bundle = ResourceBundle.getBundle(bundleName, currentLocale);
         
         LoginFrame loginFrame = new LoginFrame(bundle);
