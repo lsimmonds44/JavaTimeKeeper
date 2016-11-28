@@ -13,14 +13,12 @@ public class Employee {
     private int id;
     private String firstName;
     private String lastName;
-    private String password;
     private String role;
     
-    public Employee(int id, String firstName, String lastName, String password, String role){
+    public Employee(int id, String firstName, String lastName, String role){
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.password = password;
         this.role = role;
     }
     
@@ -34,10 +32,6 @@ public class Employee {
     
     public String getLastName(){
         return this.lastName;
-    }
-    
-    public String getPassword(){
-        return this.password;
     }
     
     public String getRole(){

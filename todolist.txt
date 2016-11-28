@@ -1,0 +1,9 @@
+EmployeeDAO:
+(done) getEmployee(String id) -> tsp_GetPersonByIdAndPassword (Need to change getEmployee to allow password variable)
+Employee:
+(done) verifyAccount needs to be changed to reflect the new getEmployee(id, password)
+ProjectDAO:
+getActiveProjects() -> tsp_GetActiveProjects
+getProject(string id) -> tsp_GetProjectById
+TimeRecordDAO:
+appendTimeRecord(timeRecord) -> tsp_AddTimeRecord
