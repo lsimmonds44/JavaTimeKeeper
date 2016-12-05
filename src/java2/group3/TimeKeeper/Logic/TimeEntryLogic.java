@@ -6,12 +6,11 @@
 package java2.group3.TimeKeeper.Logic;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java2.group3.TimeKeeper.DataAccess.ProjectDAO;
 import java2.group3.TimeKeeper.DataAccess.TimeRecordDAO;
 import java2.group3.TimeKeeper.DataObjects.Project;
-import java2.group3.TimeKeeper.DataObjects.TimeRecord;
 
 /**
  *
@@ -19,24 +18,24 @@ import java2.group3.TimeKeeper.DataObjects.TimeRecord;
  */
 public class TimeEntryLogic {
 
-    private TimeRecordDAO timeRecordDAO = new TimeRecordDAO();
-    private ProjectDAO projectDAO = new ProjectDAO();
+    private final TimeRecordDAO timeRecordDAO = new TimeRecordDAO();
+    private final ProjectDAO projectDAO = new ProjectDAO();
 
-    public boolean saveTimeRecord(TimeRecord timeRecord) throws IOException {
+    public boolean saveTimeRecord(int employeeId, int projectId, char startOrStop) throws IOException, SQLException, ClassNotFoundException {
         boolean success = false;
         try {
-            timeRecordDAO.appendTimeRecord(timeRecord);
+            //needs: int employeeID, int projectID, char startOrStop
+            timeRecordDAO.appendTimeRecord(employeeId, projectId, startOrStop);
             success = true;
-        } catch (IOException e) {
+        } catch (IOException | SQLException | ClassNotFoundException e) {
             throw e;
         }
         return success;
     }
 
-    public ArrayList<Object[]> getActiveProjects() throws IOException {
+    public ArrayList<Object[]> getActiveProjects() throws IOException, SQLException, ClassNotFoundException {
         ArrayList<Object[]> rowsOfProjects = null;
-        ArrayList<Project> activeProjects = null;
-
+        ArrayList<Project> activeProjects;
         try {
             activeProjects = projectDAO.getActiveProjects();
             if (activeProjects != null) {
@@ -45,10 +44,9 @@ public class TimeEntryLogic {
                     rowsOfProjects.add(new Object[]{p.getProjectId(), p.getProjectName(), p.getProjectDescription()});
                 }
             }
-        } catch (IOException ioe) {
-            throw ioe;
+        } catch (IOException | SQLException | ClassNotFoundException ex) {
+            throw ex;
         }
-
         return rowsOfProjects;
     }
 }

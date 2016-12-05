@@ -12,20 +12,24 @@ import java.time.LocalDateTime;
  * @author Skyler Hiscock
  */
 public class TimeRecord {
+
     private int projectId;
     private int employeeId;
     private char startOrStop;
     private LocalDateTime dateTime;
-    
-    public TimeRecord(int projectId, int personId, char startOrStop, LocalDateTime dateTime){
+
+    public TimeRecord() {
+    }
+
+    public TimeRecord(int projectId, int personId, char startOrStop, LocalDateTime dateTime) {
         this.projectId = projectId;
         this.employeeId = personId;
         this.startOrStop = startOrStop;
         this.dateTime = dateTime;
     }
-    
+
     @Override
-    public String toString(){
+    public String toString() {
         return this.getProjectId() + "|" + this.getEmployeeId() + "|" + this.getStartOrStop() + "|" + this.getDateTime();
     }
 
@@ -56,5 +60,33 @@ public class TimeRecord {
     public LocalDateTime getDateTime() {
         return dateTime;
     }
-    
+
+    /**
+     * @param projectId the projectId to set
+     */
+    public void setProjectId(int projectId) {
+        this.projectId = projectId;
+    }
+
+    /**
+     * @param employeeId the employeeId to set
+     */
+    public void setEmployeeId(int employeeId) {
+        this.employeeId = employeeId;
+    }
+
+    /**
+     * @param startOrStop the startOrStop to set
+     */
+    public void setStartOrStop(char startOrStop) {
+        this.startOrStop = startOrStop;
+    }
+
+    /**
+     * @param dateTime the dateTime to set
+     */
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+
 }

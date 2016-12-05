@@ -5,7 +5,10 @@
  */
 package java2.group3.TimeKeeper.Viewer;
 
+import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 import java2.group3.TimeKeeper.DataObjects.Employee;
 import javax.swing.JOptionPane;
@@ -129,14 +132,18 @@ public class LoginFrame extends javax.swing.JFrame {
         } else if (passwordField.getText().equals("")) {
             JOptionPane.showMessageDialog(this, bundle.getString("gui_login_nopassword"), bundle.getString("error"), JOptionPane.ERROR_MESSAGE);
         } else {
-            Employee currentEmployee = loginLogic.verifyAccount(IDField.getText(), passwordField.getText());
-            if (currentEmployee == null) {
-                JOptionPane.showMessageDialog(this, bundle.getString("gui_login_invalidlogin"), bundle.getString("error"), JOptionPane.ERROR_MESSAGE);
-            } else {
-                MainMenuFrame mainMenu = new MainMenuFrame(bundle, currentEmployee);
-                mainMenu.setLocationRelativeTo(this);
-                mainMenu.setVisible(true);
-                this.dispose();
+            try {
+                Employee currentEmployee = loginLogic.verifyAccount(IDField.getText(), passwordField.getText());
+                if (currentEmployee == null) {
+                    JOptionPane.showMessageDialog(this, bundle.getString("gui_login_invalidlogin"), bundle.getString("error"), JOptionPane.ERROR_MESSAGE);
+                } else {
+                    MainMenuFrame mainMenu = new MainMenuFrame(bundle, currentEmployee);
+                    mainMenu.setLocationRelativeTo(this);
+                    mainMenu.setVisible(true);
+                    this.dispose();
+                }
+            } catch (IOException | SQLException | ClassNotFoundException | HeadlessException e) {
+                JOptionPane.showMessageDialog(this, e.getLocalizedMessage(), bundle.getString("error"), JOptionPane.ERROR_MESSAGE);
             }
         }
     }

@@ -6,8 +6,8 @@
 package java2.group3.TimeKeeper.Viewer;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java2.group3.TimeKeeper.DataObjects.Employee;
@@ -25,6 +25,9 @@ public class TimeEntryFrame extends javax.swing.JFrame {
 
     /**
      * Creates new form TimeEntryFrame
+     *
+     * @param bundle
+     * @param currentUser
      */
     public TimeEntryFrame(ResourceBundle bundle, Employee currentUser) {
         this.bundle = bundle;
@@ -160,7 +163,7 @@ public class TimeEntryFrame extends javax.swing.JFrame {
      * @param projectDesc
      */
     private void addProjectsToTable() {
-        ArrayList<Object[]> activeProjects = null;
+        ArrayList<Object[]> activeProjects;
         try {
             activeProjects = timeLogic.getActiveProjects();
             if (activeProjects != null) {
@@ -170,8 +173,8 @@ public class TimeEntryFrame extends javax.swing.JFrame {
             } else {
                 JOptionPane.showMessageDialog(this, "No projects found.", bundle.getString("error"), JOptionPane.ERROR_MESSAGE);
             }
-        } catch (IOException ioe) {
-            JOptionPane.showMessageDialog(this, ioe.getMessage(), bundle.getString("error"), JOptionPane.ERROR_MESSAGE);
+        } catch (IOException | SQLException | ClassNotFoundException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), bundle.getString("error"), JOptionPane.ERROR_MESSAGE);
         }
 
     }
@@ -192,7 +195,8 @@ public class TimeEntryFrame extends javax.swing.JFrame {
 
         // Save the Time Record
         try {
-            if (timeLogic.saveTimeRecord(timeRecord)) {
+            //passing the employeeId, projectId, and startOrStop into the TimeRecordDAO
+            if (timeLogic.saveTimeRecord(employeeId, projectId, startOrEnd)) {
                 // If the TimeRecord save was successful, notify the user in an OptionPane and return to MainMenu
                 Object[] options = {"OK"};
                 int ok = JOptionPane.showOptionDialog(this, this.bundle.getString("gui_timeentry_entrysuccess"), this.bundle.getString("success"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
@@ -204,8 +208,8 @@ public class TimeEntryFrame extends javax.swing.JFrame {
                 }
             }
 
-        } catch (IOException ioe) {
-            JOptionPane.showMessageDialog(this, ioe.getMessage(), bundle.getString("error"), JOptionPane.ERROR_MESSAGE);
+        } catch (IOException | SQLException | ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), bundle.getString("error"), JOptionPane.ERROR_MESSAGE);
         }
     }
 

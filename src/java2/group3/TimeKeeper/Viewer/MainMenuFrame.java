@@ -16,18 +16,19 @@ import java2.group3.TimeKeeper.Logic.MainMenuLogic;
  * @author Skyler Hiscock
  */
 public class MainMenuFrame extends javax.swing.JFrame {
+
     private MainMenuLogic menuLogic = new MainMenuLogic();
-    
 
     /**
      * Creates new form MainMenuFrame
+     *
      * @param bundle
      * @param currentEmployee
      */
     public MainMenuFrame(ResourceBundle bundle, Employee currentEmployee) {
         this(bundle, currentEmployee, null);
     }
-    
+
     /**
      *
      * @param bundle
@@ -65,14 +66,26 @@ public class MainMenuFrame extends javax.swing.JFrame {
 
         lblUserHeader.setText(this.bundle.getString("gui_mainmenu_lblcurrentuser"));
 
-        lblProjectHeader.setText(this.bundle.getString("gui_mainmenu_lblcurrentproject"));
+        if(timeRecord != null){
+            if(timeRecord.getStartOrStop() == 'E'){
+                lblProjectHeader.setText(this.bundle.getString("gui_mainmenu_lbllastproject"));
+            } else {
+                lblProjectHeader.setText(this.bundle.getString("gui_mainmenu_lblcurrentproject"));
+            }
+        }else{
+            lblProjectHeader.setText(this.bundle.getString("gui_mainmenu_lblcurrentproject"));
+        }
 
         lblCurrentUser.setText(currentEmployee.getFirstName() + " " + currentEmployee.getLastName());
 
         if(timeRecord != null){
-            String projectName = menuLogic.getProjectName(timeRecord);
-            if(projectName != null){
-                lblCurrentProject.setText(projectName);
+            try{
+                String projectName = menuLogic.getProjectName(timeRecord);
+                if(projectName != null){
+                    lblCurrentProject.setText(projectName);
+                }
+            } catch(Exception e) {
+                System.out.println(e.getMessage()); // No real need to show the user this error.
             }
         }else{
             lblCurrentProject.setText(bundle.getString("gui_mainmenu_lblnocurrentproject"));
@@ -180,13 +193,10 @@ public class MainMenuFrame extends javax.swing.JFrame {
     private javax.swing.JLabel lblStartOrEndHeader;
     private javax.swing.JLabel lblUserHeader;
     // End of variables declaration//GEN-END:variables
-   
-    
+
     private final ResourceBundle bundle;
     private final Employee currentEmployee;
     private final TimeRecord timeRecord;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
-
 
 }

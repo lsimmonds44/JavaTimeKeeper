@@ -21,15 +21,15 @@ import java2.group3.TimeKeeper.DataObjects.Employee;
 public class EmployeeDAO {
 
     ResourceBundle resourceBundle;
-    
-    public EmployeeDAO(){
+
+    public EmployeeDAO() {
         resourceBundle = ResourceBundle.getBundle("java2.group3.TimeKeeper.Resources.TimeKeeper");
     }
-    
-    public Employee getPersonByIdAndPassword(int id, String password) 
+
+    public Employee getPersonByIdAndPassword(int id, String password)
             throws IOException, SQLException, ClassNotFoundException {
         Employee employee = null;
-        
+
         /**
          * Gather the connection information
          */
@@ -37,41 +37,37 @@ public class EmployeeDAO {
         String databaseName = resourceBundle.getString("db_name");
         String databaseUserName = resourceBundle.getString("db_user_name");
         String databaseUserPassword = resourceBundle.getString("db_user_password");
-        
+
         /**
          * Get the connection
          */
-        Connection conn = DatabaseConnectionBuilderMySQL.getConnection(databaseName
-                , databaseUserName
-                , databaseUserPassword);
-        
+        Connection conn = DatabaseConnectionBuilderMySQL.getConnection(databaseName, databaseUserName, databaseUserPassword);
+
         /**
          * This callable statement takes two parameters: id and password.
-         * We set the parameters by type and by position number.  Remember, in
-         * SQL the positions start with one and not zero.
          */
         CallableStatement callableStatement = conn.prepareCall("{call tsp_GetPersonByIdAndPassword(?,?)}");
         callableStatement.setInt(1, id);
         callableStatement.setString(2, password);
-        
         /**
          * Get a result set from running the statement
          */
         ResultSet resultSet = callableStatement.executeQuery();
-        
+
         /**
          * We use if instead of while because we should be after only one
          */
         String lastName;
         String firstName;
         String role;
-        if(resultSet.next()) {
+        if (resultSet.next()) {
             id = resultSet.getInt(1);
             lastName = resultSet.getString(2);
             firstName = resultSet.getString(3);
             role = resultSet.getString(4);
             employee = new Employee(id, firstName, lastName, role);
         }
+        conn.close();
         return employee;
     }
 }

@@ -5,63 +5,111 @@
  */
 package java2.group3.TimeKeeper.DataAccess;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.ResourceBundle;
+import java2.group3.TimeKeeper.DataObjects.DatabaseConnectionBuilderMySQL;
 import java2.group3.TimeKeeper.DataObjects.Project;
 
 /**
  *
- * @author Skyler Hiscock
+ * @author Laura Simmonds
  */
 public class ProjectDAO {
 
-    private final String workingDirectory = System.getProperty("user.dir");
-    private final String fileName = workingDirectory + "/data/project_data.txt";
+    ResourceBundle resourceBundle;
 
-    public Project getProject(String id) throws IOException {
+    public ProjectDAO() {
+        resourceBundle = ResourceBundle.getBundle("java2.group3.TimeKeeper.Resources.TimeKeeper");
+    }
+
+    public Project getProject(int id) throws IOException, SQLException, ClassNotFoundException {
         Project returnProject = null;
-        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] splitString = line.split("\\|");
-                if (id.equals(splitString[0])) {
-                    int projectId = Integer.parseInt(splitString[0]);
-                    String active = splitString[1];
-                    String projectName = splitString[2];
-                    String projectDescription = splitString[3];
-                    returnProject = new Project(projectId, active, projectName, projectDescription);
-                }
-            }
-            br.close();
 
+        /**
+         * Gather the connection information
+         */
+        String databaseUrl = resourceBundle.getString("db_url");
+        String databaseName = resourceBundle.getString("db_name");
+        String databaseUserName = resourceBundle.getString("db_user_name");
+        String databaseUserPassword = resourceBundle.getString("db_user_password");
+
+        /**
+         * Get the connection
+         */
+        Connection conn = DatabaseConnectionBuilderMySQL.getConnection(databaseName, databaseUserName, databaseUserPassword);
+
+        /**
+         * This callable statement takes two parameters: id and password. We set
+         * the parameters by type and by position number. Remember, in SQL the
+         * positions start with one and not zero.
+         */
+        CallableStatement callableStatement = conn.prepareCall("{call tsp_GetProjectById(?)}");
+        callableStatement.setInt(1, id);
+
+        /**
+         * Get a result set from running the statement
+         */
+        ResultSet resultSet = callableStatement.executeQuery();
+
+        /**
+         * We use if instead of while because we should be after only one
+         */
+        if (resultSet.next()) {
+            int projectId = resultSet.getInt(1);
+            String active = resultSet.getString(2);
+            String projectName = resultSet.getString(3);
+            String projectDescription = resultSet.getString(4);
+
+            returnProject = new Project(projectId, active, projectName, projectDescription);
         }
+        conn.close();
         return returnProject;
     }
 
-    public ArrayList<Project> getActiveProjects() throws IOException {
+    public ArrayList<Project> getActiveProjects() throws IOException, SQLException, ClassNotFoundException {
         ArrayList<Project> activeProjects = new ArrayList<>();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] splitString = line.split("\\|");
-                if (splitString[1].equals("A")) {
-                    int projectId = Integer.parseInt(splitString[0]);
-                    String active = splitString[1];
-                    String projectName = splitString[2];
-                    String projectDescription = splitString[3];
-                    activeProjects.add(new Project(projectId, active, projectName, projectDescription));
-                }
-            }
-            br.close();
+        /**
+         * Gather the connection information
+         */
+        String databaseUrl = resourceBundle.getString("db_url");
+        String databaseName = resourceBundle.getString("db_name");
+        String databaseUserName = resourceBundle.getString("db_user_name");
+        String databaseUserPassword = resourceBundle.getString("db_user_password");
 
+        /**
+         * Get the connection
+         */
+        Connection conn = DatabaseConnectionBuilderMySQL.getConnection(databaseName, databaseUserName, databaseUserPassword);
+
+        /**
+         * This callable statement takes no parameters
+         */
+        CallableStatement callableStatement = conn.prepareCall("{call tsp_GetActiveProjects()}");
+
+        /**
+         * Get a result set from running the statement
+         */
+        ResultSet resultSet = callableStatement.executeQuery();
+
+        /**
+         * We use while instead of if because it should be returning multiple
+         * rows
+         */
+        while (resultSet.next()) {
+            int projectID = resultSet.getInt(1);
+            String active = resultSet.getString(2);
+            String projectName = resultSet.getString(3);
+            String projectDescription = resultSet.getString(4);
+            activeProjects.add(new Project(projectID, active, projectName, projectDescription));
         }
-        if (activeProjects != null) {
-            Collections.sort(activeProjects);
-        }
+        conn.close();
         return activeProjects;
     }
+
 }

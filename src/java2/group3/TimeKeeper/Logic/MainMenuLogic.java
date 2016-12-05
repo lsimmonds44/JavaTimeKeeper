@@ -5,6 +5,8 @@
  */
 package java2.group3.TimeKeeper.Logic;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 import java2.group3.TimeKeeper.DataAccess.ProjectDAO;
 import java2.group3.TimeKeeper.DataObjects.Employee;
@@ -18,27 +20,26 @@ import java2.group3.TimeKeeper.Viewer.TimeEntryFrame;
  */
 public class MainMenuLogic {
 
-
-
     /**
      * This only exists because we don't store Project Name in the Time Record
      * object Returns the name of the project stored in the time record
      *
      * @param timeRecord
      * @return projectName
+     * @throws java.io.IOException
+     * @throws java.sql.SQLException
+     * @throws java.lang.ClassNotFoundException
      */
-    public String getProjectName(TimeRecord timeRecord) {
+    public String getProjectName(TimeRecord timeRecord) throws IOException, SQLException, ClassNotFoundException {
         String projectName = null;
         ProjectDAO projectDAO = new ProjectDAO();
         try {
-            Project project = projectDAO.getProject(Integer.toString(timeRecord.getProjectId()));
+            Project project = projectDAO.getProject(timeRecord.getProjectId());
             if (project != null) {
                 projectName = project.getProjectName();
             }
-        } catch (Exception e) {
-            // This catch only exists because converting an int to a string is unsafe.
-            // But if the timeRecord ID can't be converted we'd have bigger problems.
-            System.out.println(e.getMessage());
+        } catch (IOException | SQLException | ClassNotFoundException e) {
+            throw e;
         }
         return projectName;
     }

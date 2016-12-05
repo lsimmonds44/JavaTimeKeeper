@@ -94,7 +94,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="lblProjectHeader">
       <Properties>
-        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor" preCode="if(timeRecord != null){&#xa;if(timeRecord.getStartOrStop() == &apos;E&apos;){&#xa;lblProjectHeader.setText(this.bundle.getString(&quot;gui_mainmenu_lbllastproject&quot;));&#xa;} else {&#xa;lblProjectHeader.setText(this.bundle.getString(&quot;gui_mainmenu_lblcurrentproject&quot;));&#xa;}&#xa;}else{" postCode="}">
           <Connection code="this.bundle.getString(&quot;gui_mainmenu_lblcurrentproject&quot;)" type="code"/>
         </Property>
       </Properties>
@@ -108,7 +108,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="lblCurrentProject">
       <Properties>
-        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor" preCode="if(timeRecord != null){&#xa;String projectName = menuLogic.getProjectName(timeRecord);&#xa;if(projectName != null){" postCode="}&#xa;}else{&#xa;lblCurrentProject.setText(bundle.getString(&quot;gui_mainmenu_lblnocurrentproject&quot;));&#xa;}">
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor" preCode="if(timeRecord != null){&#xa;try{&#xa;    String projectName = menuLogic.getProjectName(timeRecord);&#xa;    if(projectName != null){" postCode="}&#xa;} catch(Exception e) {&#xa;    System.out.println(e.getMessage()); // No real need to show the user this error. &#xa;}&#xa;}else{&#xa;lblCurrentProject.setText(bundle.getString(&quot;gui_mainmenu_lblnocurrentproject&quot;));&#xa;}">
           <Connection code="projectName" type="code"/>
         </Property>
       </Properties>
