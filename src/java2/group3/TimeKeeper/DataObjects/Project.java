@@ -9,7 +9,7 @@ package java2.group3.TimeKeeper.DataObjects;
  *
  * @author Skyler Hiscock
  */
-public class Project implements Comparable<Project>{
+public class Project implements Comparable<Project> {
 
     private int projectId;
     private String active;
