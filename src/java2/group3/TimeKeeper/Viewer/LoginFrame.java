@@ -145,6 +145,9 @@ public class LoginFrame extends javax.swing.JFrame {
             } catch (IOException | SQLException | ClassNotFoundException | HeadlessException e) {
                 JOptionPane.showMessageDialog(this, e.getLocalizedMessage(), bundle.getString("error"), JOptionPane.ERROR_MESSAGE);
             }
+            catch (NumberFormatException e){
+                JOptionPane.showMessageDialog(this, bundle.getString("gui_login_invalidlogin"), bundle.getString("error"), JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
